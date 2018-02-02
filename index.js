@@ -58,7 +58,7 @@ guardedString.protectString = (val /*: GuardedString */) /*: GuardedString */ =>
   def(val, 'toString', {
     enumerable: true,
     get() {
-      throw new Error('Attempted to call `str.toString()` on a protected string. To convert a protected string to a normal string use `guardedString.toUnprotectedString(str)`')
+      throw new Error('Attempted to call `str.toString()` on a protected string. To convert a protected string to a normal string use `guardedString.toUnguardedString(str)`')
     }
   });
 
@@ -84,7 +84,7 @@ guardedString.toUnguardedString = (val /*: GuardedString */) /*: string */ => {
   if (guardedString.isGuardedString(val)) {
     return val[GUARDED_STRING];
   } else {
-    throw new Error('Called `guardedString.toUnprotectedString(str)` on a value that is not a protected string');
+    throw new Error('Called `guardedString.toUnguardedString(str)` on a value that is not a guarded string');
   }
 };
 
