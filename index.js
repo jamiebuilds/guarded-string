@@ -23,7 +23,7 @@ function guardedString(strs /*: Array<string> */, ...parts /*: Array<mixed> */) 
   def(obj, 'toString', {
     enumerable: true,
     get() {
-      throw new Error('Attempted to call `str.toString()` on a guarded string. To convert a guarded string to a normal string use `guardedString.toString(str)`')
+      throw new Error('Attempted to call `str.toString()` on a guarded string. To convert a guarded string to a normal string use `guardedString.toUnguardedString(str)`')
     }
   });
 
@@ -50,7 +50,7 @@ guardedString.toUnguardedString = (val /*: GuardedString */) /*: string */ => {
   if (guardedString.isGuardedString(val)) {
     return val[GUARDED_STRING];
   } else {
-    throw new Error('Called `guardedString.toString(str)` on a value that is not a guarded string');
+    throw new Error('Called `guardedString.toUnguardedString(str)` on a value that is not a guarded string');
   }
 };
 
