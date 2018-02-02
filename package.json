@@ -1,0 +1,28 @@
+{
+  "name": "guarded-string",
+  "version": "0.0.0",
+  "description": "Prevent accidentally introducing XSS holes with the strings in your app",
+  "main": "index.js",
+  "repository": "https://github.com/thejameskyle/guarded-string",
+  "author": "James Kyle <me@thejameskyle.com>",
+  "license": "MIT",
+  "keywords": [
+    "guarded",
+    "secure",
+    "safe",
+    "string",
+    "template",
+    "literal",
+    "xss"
+  ],
+  "files": [
+    "index.js"
+  ],
+  "scripts": {
+    "test": "ava"
+  },
+  "devDependencies": {
+    "ava": "^0.25.0",
+    "flow-bin": "^0.64.0"
+  }
+}
