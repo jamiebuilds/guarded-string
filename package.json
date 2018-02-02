@@ -1,6 +1,6 @@
 {
   "name": "guarded-string",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Prevent accidentally introducing XSS holes with the strings in your app",
   "main": "index.js",
   "repository": "https://github.com/thejameskyle/guarded-string",
