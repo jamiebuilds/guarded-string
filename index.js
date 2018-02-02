@@ -1,6 +1,7 @@
 // @flow
 'use strict';
 const GUARDED_STRING = Symbol('guarded-string');
+const PROTECTED_STRING = Symbol('protected-string');
 const def /*: Function */ = Object.defineProperty;
 
 /*::
@@ -13,29 +14,30 @@ function guardedString(strs /*: Array<string> */, ...parts /*: Array<mixed> */) 
   }
 
   let obj /*: Object */ = {};
+  let str = strs[0];
 
   def(obj, GUARDED_STRING, {
     get() {
-      return strs[0];
+      return str;
     }
   });
 
   def(obj, 'toString', {
     enumerable: true,
-    get() {
-      throw new Error('Attempted to call `str.toString()` on a guarded string. To convert a guarded string to a normal string use `guardedString.toUnguardedString(str)`')
+    configurable: true,
+    writable: true,
+    value() {
+      return str;
     }
   });
 
-  return Object.seal(Object.freeze(obj));
-}
+  return obj;
+};
 
 guardedString.isGuardedString = (val /*: GuardedString */) /*: boolean */ => {
   return (
     typeof val === 'object' &&
     val !== null &&
-    Object.isSealed(val) &&
-    Object.isFrozen(val) &&
     typeof val[GUARDED_STRING] === 'string'
   );
 };
@@ -43,6 +45,38 @@ guardedString.isGuardedString = (val /*: GuardedString */) /*: boolean */ => {
 guardedString.assertGuardedString = (val /*: GuardedString */) => {
   if (!guardedString.isGuardedString(val)) {
     throw new Error('Value is not a guarded string');
+  }
+};
+
+guardedString.protectString = (val /*: GuardedString */) /*: GuardedString */ => {
+  def(val, PROTECTED_STRING, {
+    get() {
+      return true;
+    }
+  });
+
+  def(val, 'toString', {
+    enumerable: true,
+    get() {
+      throw new Error('Attempted to call `str.toString()` on a protected string. To convert a protected string to a normal string use `guardedString.toUnguardedString(str)`')
+    }
+  });
+
+  return Object.seal(Object.freeze(val));
+};
+
+guardedString.isProtectedString = (val /*: GuardedString */) /*: boolean */ => {
+  return (
+    guardedString.isGuardedString(val) &&
+    Object.isSealed(val) &&
+    Object.isFrozen(val) &&
+    val[PROTECTED_STRING] === true
+  );
+};
+
+guardedString.assertProtectedString = (val /*: GuardedString */) => {
+  if (!guardedString.isProtectedString(val)) {
+    throw new Error('Value is not a protected string');
   }
 };
 
