@@ -20,13 +20,15 @@ import guardedString from 'guarded-string';
 
 const myString = guardedString`My very important (but not too important) string`;
 
-guardedString.isGuardedString(myString); // >> boolean
-guardedString.assertGuardedString(myString); // >> maybe throws
-guardedString.toUnguardedString(myString); // >> unguarded string (throws on other value types)
+guardedString.isGuarded(myString); // >> boolean
+guardedString.assertGuarded(myString); // >> maybe throws
+guardedString.toUnguarded(myString); // >> unguarded string (throws on other value types)
 
 myString + ''; // 'My very important (but not too important) string'
 
-guardedString.protectString(myString);
+guardedString.freeze(myString);
+guardedString.isFrozen(myString);
+guardedString.assertFrozen(myString);
 
 myString + ''; // Error!
 JSON.stringify(myString); // Error!
@@ -52,36 +54,36 @@ an unguarded (regular) string.
 let str1 = guardedString`Hello World`;
 let str2 = str1 + '!';
 
-guardedString.isGuardedString(str1); // true
-guardedString.isGuardedString(str2); // false
+guardedString.isGuarded(str1); // true
+guardedString.isGuarded(str2); // false
 ```
 
 If you want to using string methods, you can wrap your string with
-`String(str)` or `guardedString.toUnguardedString(str)`.
+`String(str)` or `guardedString.toUnguarded(str)`.
 
 ```js
 let str1 = guardedString`Hello World`;
 let str2 = String(str1).replace('World', 'Universe');
-let str3 = guardedString.toUnguardedString(str1).replace('World', 'Universe');
+let str3 = guardedString.toUnguarded(str1).replace('World', 'Universe');
 ```
 
-### `guardedString.isGuardedString(val)`
+### `guardedString.isGuarded(val)`
 
 This just returns a `boolean` if the value you pass in is a guarded string or
 not.
 
-### `guardedString.assertGuardedString(val)`
+### `guardedString.assertGuarded(val)`
 
 This will throw an error if the value you pass in is not a guarded string.
 
-### `guardedString.protectString(str)`
+### `guardedString.freeze(str)`
 
 If you want to make sure that your string is not accidentally stringified, you
-can call `guardedString.protectString(str)` on your guarded string and it will
+can call `guardedString.freeze(str)` on your guarded string and it will
 prevent code from accidentally stringifying it.
 
 ```js
-let str = guardedString.protectString(guardedString`Hello World`);
+let str = guardedString.freeze(guardedString`Hello World`);
 
 String(str); // Error!
 str + '!'; // Error!
@@ -90,25 +92,25 @@ JSON.stringify(str); // Error!
 
 > See [test cases](test.js) for more
 
-Note that you can still call `guardedString.toUnguardedString(str)` to convert
+Note that you can still call `guardedString.toUnguarded(str)` to convert
 it back to a plain string.
 
-### `guardedString.isProtectedString(val)`
+### `guardedString.isFrozen(val)`
 
-This just returns a `boolean` if the value you pass in is a protected string or
+This just returns a `boolean` if the value you pass in is a frozen string or
 not.
 
-### `guardedString.assertProtectedString(val)`
+### `guardedString.assertFrozen(val)`
 
-This will throw an error if the value you pass in is not a protected string.
+This will throw an error if the value you pass in is not a frozen string.
 
-### `guardedString.toUnguardedString(str)`
+### `guardedString.toUnguarded(str)`
 
-This will convert any guarded string (including protected strings).
+This will convert any guarded string (including frozen strings).
 
 ```js
-let str1 = guardedString.protectString(guardedString`Hello World`);
-let str2 = guardedString.toUnguardedString(str1);
+let str1 = guardedString.freeze(guardedString`Hello World`);
+let str2 = guardedString.toUnguarded(str1);
 
 console.log(typeof str1); // 'object'
 console.log(typeof str2); // 'string'

@@ -22,30 +22,30 @@ test('guardedString``.toString()', t => {
   t.notThrows(() => JSON.stringify(str));
 });
 
-test('guardedString.isGuardedString', t => {
-  t.is(guardedString.isGuardedString(guardedString`foo`), true);
+test('guardedString.isGuarded', t => {
+  t.is(guardedString.isGuarded(guardedString`foo`), true);
   // $ExpectError
-  t.is(guardedString.isGuardedString('foo'), false);
+  t.is(guardedString.isGuarded('foo'), false);
   // $ExpectError
-  t.is(guardedString.isGuardedString({}), false);
+  t.is(guardedString.isGuarded({}), false);
   // $ExpectError
-  t.is(guardedString.isGuardedString(null), false);
+  t.is(guardedString.isGuarded(null), false);
   // $ExpectError
-  t.is(guardedString.isGuardedString(guardedString.toUnguardedString(guardedString`foo`)), false);
+  t.is(guardedString.isGuarded(guardedString.toUnguarded(guardedString`foo`)), false);
 });
 
-test('guardedString.assertGuardedString', t => {
-  t.notThrows(() => guardedString.assertGuardedString(guardedString`foo`));
+test('guardedString.assertGuarded', t => {
+  t.notThrows(() => guardedString.assertGuarded(guardedString`foo`));
   // $ExpectError
-  t.throws(() => guardedString.assertGuardedString('foo'));
+  t.throws(() => guardedString.assertGuarded('foo'));
   // $ExpectError
-  t.throws(() => guardedString.assertGuardedString({}));
+  t.throws(() => guardedString.assertGuarded({}));
   // $ExpectError
-  t.throws(() => guardedString.assertGuardedString(guardedString.toUnguardedString(guardedString`foo`)));
+  t.throws(() => guardedString.assertGuarded(guardedString.toUnguarded(guardedString`foo`)));
 });
 
-test('guardedString.protectString(guardedString``).toString()', t => {
-  let str = guardedString.protectString(guardedString`foo`);
+test('guardedString.freeze(guardedString``).toString()', t => {
+  let str = guardedString.freeze(guardedString`foo`);
   // $ExpectError
   t.throws(() => str.toString());
   // $ExpectError
@@ -58,30 +58,45 @@ test('guardedString.protectString(guardedString``).toString()', t => {
   t.throws(() => JSON.stringify(str));
 });
 
-test('guardedString.isProtected', t => {
-  t.is(guardedString.isProtectedString(guardedString.protectString(guardedString`foo`)), true);
-  t.is(guardedString.isProtectedString(guardedString`foo`), false);
+test('guardedString.isFrozen', t => {
+  t.is(guardedString.isFrozen(guardedString.freeze(guardedString`foo`)), true);
+  t.is(guardedString.isFrozen(guardedString`foo`), false);
   // $ExpectError
-  t.is(guardedString.isProtectedString('foo'), false);
+  t.is(guardedString.isFrozen('foo'), false);
   // $ExpectError
-  t.is(guardedString.isProtectedString({}), false);
+  t.is(guardedString.isFrozen({}), false);
   // $ExpectError
-  t.is(guardedString.isProtectedString(null), false);
+  t.is(guardedString.isFrozen(null), false);
   // $ExpectError
-  t.is(guardedString.isProtectedString(guardedString.toUnguardedString(guardedString`foo`)), false);
+  t.is(guardedString.isFrozen(guardedString.toUnguarded(guardedString`foo`)), false);
   // $ExpectError
-  t.is(guardedString.isProtectedString(guardedString.toUnguardedString(guardedString.protectString(guardedString`foo`))), false);
+  t.is(guardedString.isFrozen(guardedString.toUnguarded(guardedString.freeze(guardedString`foo`))), false);
 });
 
-test('guardedString.toUnguardedString', t => {
-  t.is(guardedString.toUnguardedString(guardedString`foo`), 'foo');
-  t.is(guardedString.toUnguardedString(guardedString.protectString(guardedString`foo`)), 'foo');
+test('guardedString.assertFrozen', t => {
+  t.notThrows(() => guardedString.assertFrozen(guardedString.freeze(guardedString`foo`)));
+  t.throws(() => guardedString.assertFrozen(guardedString`foo`));
   // $ExpectError
-  t.throws(() => guardedString.toUnguardedString('foo'));
+  t.throws(() => guardedString.assertFrozen('foo'));
   // $ExpectError
-  t.throws(() => guardedString.toUnguardedString({}));
+  t.throws(() => guardedString.assertFrozen({}));
   // $ExpectError
-  t.throws(() => guardedString.toUnguardedString(guardedString.toUnguardedString(guardedString`foo`)));
+  t.throws(() => guardedString.assertFrozen(null));
   // $ExpectError
-  t.throws(() => guardedString.toUnguardedString(guardedString.toUnguardedString(guardedString.protectString(guardedString`foo`))));
+  t.throws(() => guardedString.assertFrozen(guardedString.toUnguarded(guardedString`foo`)));
+  // $ExpectError
+  t.throws(() => guardedString.assertFrozen(guardedString.toUnguarded(guardedString.freeze(guardedString`foo`))));
+});
+
+test('guardedString.toUnguarded', t => {
+  t.is(guardedString.toUnguarded(guardedString`foo`), 'foo');
+  t.is(guardedString.toUnguarded(guardedString.freeze(guardedString`foo`)), 'foo');
+  // $ExpectError
+  t.throws(() => guardedString.toUnguarded('foo'));
+  // $ExpectError
+  t.throws(() => guardedString.toUnguarded({}));
+  // $ExpectError
+  t.throws(() => guardedString.toUnguarded(guardedString.toUnguarded(guardedString`foo`)));
+  // $ExpectError
+  t.throws(() => guardedString.toUnguarded(guardedString.toUnguarded(guardedString.freeze(guardedString`foo`))));
 });
